@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Async</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+</head>
+<body onload="runScript(); RunTest.test1()">
+<h1>Asynchronous Javascript</h1>
+and to make things a bit more convenient, instead of dealing creating new Promises and chaining them, we can write asynchronous code like synchronous one. The "async" keyword makes a function return a Promise, "await" instructing execution to wait until the Promise is resolved.
+<pre>
+<code class="language-javascript">
+    async function preheatOven() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                console.log("preheating done")
+                resolve();
+            }, 2000)
+        })
+    }
+
+    async function mixIngredients() {
+        console.log("mixing done")
+    }
+
+    async function putCakeInOven() {
+        console.log("putting cake in oven")
+    }
+
+    async function bakeCake() {
+        const ovenHeatPromise = preheatOven()
+        await mixIngredients()
+        await ovenHeatPromise.then(_ => putCakeInOven())
+    }
+
+    async function prepareTable() {
+        return new Promise((resolve) => {
+            setTimeout(() =>  {
+                console.log("table prepared")
+                resolve()
+            }, 1000)
+        })
+    }
+
+    console.log("start work")
+    bakeCake()
+    prepareTable()
+
+    // -> start work
+    // -> mixing done
+    // -> table prepared
+    // -> preheating done
+    // -> putting cake in oven
+
+</code>
+</pre>
+what we dont see is that the "then" method is actually creating a new promise that may resolve a value.
+
+
+<h3>Your Task: same as before but with async/await</h3>
+<span>edit the script block of this file to check off all the steps involved</span><br>
+<h2>How to harvest:</h2>
+<div>
+    <ul>
+        <li><span id="plant"></span> plant strawberries</li>
+        <li><span id="water"></span> water them</li>
+        <li><span id="wait"></span> wait a few months</li>
+        <li><span id="harvest"></span> harvest</li>
+    </ul>
+</div>
+<pre class="jserror"></pre>
+<pre class="error"></pre>
+
+<script type="application/javascript">
+
+    class Strawberries {
+        plant() { checkOff("plant")}
+        water() { checkOff("water")}
+        wait() {
+            return new Promise((resolve) =>  {
+                checkOff("wait")
+                resolve()
+            })
+        }
+        harvest() { checkOff("harvest")}
+    }
+
+    async function plantStrawberries() {
+        const strawberries = new Strawberries();
+        strawberries.plant()
+        return strawberries
+    }
+
+    const runScript = async () => {
+        try {
+            const strawberries = await plantStrawberries().then(strawberries => {
+                strawberries.water();
+                return strawberries
+            })
+            await strawberries.wait()
+
+        } catch (e) {
+            document.getElementsByClassName("jserror")[0].textContent = e.message + "\n\n" + e.stack
+        }
+    };
+
+    const checkOff = (id) => document.getElementById(id).append("✅")
+</script>
+<script src="test.js"></script>
+
+<div id="displayOnSuccess" hidden="hidden">
+    <a href="./fixme">FIXME next classroom</a>
+</div>
+
+<!-- fancy code highlighting -->
+<script>hljs.highlightAll();</script>
+</body>
+</html>
