@@ -2,11 +2,11 @@ const RunTest = {
     test1() {
         setTimeout(() => {
             try {
-                if (
-                    [...document.querySelectorAll(".check")].findIndex(it =>
-                        it.getAttribute('hidden') === 'hidden') > -1
-                ) {
-                    document.getElementsByClassName("error")[0].textContent = `please build a prototype chain like described`
+                const unchecked = ["plant", "water", "wait", "harvest"].filter(it => {
+                    return document.getElementById(it).textContent !== "✅"
+                })
+                if (unchecked.length > 0) {
+                    document.getElementsByClassName("error")[0].textContent = `'${unchecked[0]}' is unchecked still`
                     return
                 }
                 document.getElementById("displayOnSuccess").hidden = false
